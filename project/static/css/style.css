@@ -1,0 +1,133 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f39c12; /* Solid Orange Background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+
+.navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #000; /* Black Navbar */
+    padding: auto;
+    color: white;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    margin-left: 50px; /* Added Left Margin */
+}
+
+.logo {
+    height: 8vw; /* Increased Logo Size */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    margin-left: -20px; /* Moved Navigation Menus Slightly Left */
+    flex-wrap: wrap;
+}
+
+.nav-links li {
+    display: inline;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+    color: #f39c12; /* Orange hover effect */
+}
+
+.login-container {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: calc(100% - 24px);
+    padding: 8px;
+    margin: 5px auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    display: block;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 14px;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+button.login-button {
+    width: 100%;
+    padding: 12px;
+    background: #f39c12; /* Orange Button */
+    color: black; /* Changed text color to black */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+button.login-button:hover {
+    background: #d87f0b; /* Darker Orange */
+}
+
+.links-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.forgot-password, .signup-link {
+    color: black; /* Changed color to black */
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.forgot-password:hover, .signup-link:hover {
+    text-decoration: underline;
+}
+
+.nav-links::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 10px;
+}
+
+

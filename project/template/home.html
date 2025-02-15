@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental - Home</title>
+    <link rel="stylesheet" href="{% static 'css/homestyle.css' %}">
+</head>
+<body>
+
+    <!-- 🚗 Navbar -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="{% static 'images/Car-hub (4).png' %}" alt="Car Rental Logo" class="logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Subscription</a></li>
+            <li><a href="#">Locations</a></li>
+            <li><a href="#">Locations</a></li>
+            <li><a href="#">Offers</a></li>
+            <li><a href="{% url 'login' %}" class="login-btn">Login / Sign Up</a></li>
+        </ul>
+    </nav>
+
+    <!-- 🚗 Hero Section -->
+    <header class="hero">
+        <h1>Find the Perfect Ride</h1>
+        <p>Affordable & Flexible Car Rentals</p>
+        <div class="search-box">
+            <label><input type="checkbox"> Return to another location</label>
+            <input type="text" placeholder="Choose pick-up location">
+            <input type="text" placeholder="Choose drop-off location">
+            <input type="datetime-local">
+            <button class="search-btn">Go</button>
+        </div>
+        <div class="info-box">
+            <p>🚗 Doorstep delivery available in your city</p>
+            <p>📦 Choose your KM Package</p>
+        </div>
+    </header>
+
+    <!-- 🚘 Featured Cars -->
+    <section class="featured-cars">
+        <h2>Top Rental Cars</h2>
+        <div class="cars-container">
+            <div class="car-card">
+                <img src="{% static 'images/car1.jpg' %}" alt="Car 1">
+                <h3>Mercedes Benz</h3>
+                <p>$50/day</p>
+                <a href="#" class="rent-btn">Rent Now</a>
+            </div>
+            <div class="car-card">
+                <img src="{% static 'images/car2.jpg' %}" alt="Car 2">
+                <h3>BMW X5</h3>
+                <p>$60/day</p>
+                <a href="#" class="rent-btn">Rent Now</a>
+            </div>
+            <div class="car-card">
+                <img src="{% static 'images/car3.jpg' %}" alt="Car 3">
+                <h3>Audi A6</h3>
+                <p>$55/day</p>
+                <a href="#" class="rent-btn">Rent Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⭐ Subscription Section -->
+    <section class="subscription">
+        <h2>Know More About Our Subscriptions</h2>
+        <p>Enjoy zero down payment, free insurance, and flexible rental options.</p>
+        <div class="features">
+            <div>💳 No Downpayment</div>
+            <div>🛡️ Free Insurance</div>
+            <div>✅ Zero Hidden Charges</div>
+            <div>🚘 Flexible Options</div>
+        </div>
+    </section>
+
+    <!-- 💬 Customer Reviews -->
+    <section class="reviews">
+        <h2>Customer Testimonials</h2>
+        <div class="review-box">
+            <p>"Great service, excellent car condition!" ⭐⭐⭐⭐⭐</p>
+            <p>- John Doe</p>
+        </div>
+        <div class="review-box">
+            <p>"Smooth process, highly recommended!" ⭐⭐⭐⭐⭐</p>
+            <p>- Jane Smith</p>
+        </div>
+    </section>
+
+    <!-- 📌 Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Car Rental. All Rights Reserved.</p>
+        <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
+    </footer>
+
+</body>
+</html>
