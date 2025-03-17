@@ -12,33 +12,41 @@
     <!-- 🚗 Navbar -->
     <nav class="navbar">
         <div class="logo-container">
-            <img src="{% static 'images/Car-hub (4).png' %}" alt="Car Rental Logo" class="logo">
+            <img src="{% static 'images/car-hub (4).png' %}" alt="Car Rental Logo" class="logo">
         </div>
         <ul class="nav-links">
-            <li><a href="#">Home</a></li>
+            <li><a href="{% url 'userhome' %}">Home</a></li>
             <li><a href="#">Subscription</a></li>
-            <li><a href="#">Locations</a></li>
+            <li><a href="#">Blog</a></li>
             <li><a href="#">Locations</a></li>
             <li><a href="#">Offers</a></li>
-            <li><a href="{% url 'login' %}" class="login-btn">Login / Sign Up</a></li>
+    
+            {% if request.user.is_authenticated %}
+                <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}" class="login-btn">Login / Sign Up</a></li>
+            {% endif %}
         </ul>
     </nav>
+    
 
     <!-- 🚗 Hero Section -->
     <header class="hero">
+        {% if request.user.is_authenticated %}
+            <h1>Hi {{username}}</h1>
+        {% endif %}
         <h1>Find the Perfect Ride</h1>
-        <p>Affordable & Flexible Car Rentals</p>
+        <p>Choose your Pickup & Drop off location here</p>
         <div class="search-box">
-            <label><input type="checkbox"> Return to another location</label>
             <input type="text" placeholder="Choose pick-up location">
             <input type="text" placeholder="Choose drop-off location">
             <input type="datetime-local">
             <button class="search-btn">Go</button>
         </div>
-        <div class="info-box">
+        <!-- <div class="info-box">
             <p>🚗 Doorstep delivery available in your city</p>
             <p>📦 Choose your KM Package</p>
-        </div>
+        </div> -->
     </header>
 
     <!-- 🚘 Featured Cars -->
@@ -46,21 +54,21 @@
         <h2>Top Rental Cars</h2>
         <div class="cars-container">
             <div class="car-card">
-                <img src="{% static 'images/car1.jpg' %}" alt="Car 1">
-                <h3>Mercedes Benz</h3>
-                <p>$50/day</p>
+                <img src="{% static 'images/Cars/rollsroyce2.jpg' %}" alt="Car 1">
+                <h3>Rolls Royce Phantom</h3>
+                <p>₹500/day</p>
                 <a href="#" class="rent-btn">Rent Now</a>
             </div>
             <div class="car-card">
                 <img src="{% static 'images/car2.jpg' %}" alt="Car 2">
                 <h3>BMW X5</h3>
-                <p>$60/day</p>
+                <p>₹3500/day</p>
                 <a href="#" class="rent-btn">Rent Now</a>
             </div>
             <div class="car-card">
-                <img src="{% static 'images/car3.jpg' %}" alt="Car 3">
-                <h3>Audi A6</h3>
-                <p>$55/day</p>
+                <img src="{% static 'images/Cars/BMW M5.jpeg' %}" alt="Car 3">
+                <h3>BMW 5 Series 530D M Sport</h3>
+                <p>₹3000/day</p>
                 <a href="#" class="rent-btn">Rent Now</a>
             </div>
         </div>

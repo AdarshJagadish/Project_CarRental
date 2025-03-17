@@ -5,6 +5,9 @@ from django.contrib import messages
 
 # Register
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('userhome')  # Redirect if the user is already logged in
+        
     if request.method == 'POST':
         username = request.POST['username'].strip()
         email = request.POST['email'].strip()
@@ -19,14 +22,22 @@ def register(request):
             messages.error(request, "Username or Email already taken!")
             return redirect('register')
 
-        User.objects.create_user(username=username, email=email, password=password)
-        messages.success(request, "Account created! Please log in.")
-        return redirect('login')
+        try:
+            User.objects.create_user(username=username, email=email, password=password)
+            messages.success(request, "Account created! Please log in.")
+            return redirect('login')
+        except Exception as e:
+            messages.error(request, f"Error creating account: {str(e)}")
+            return redirect('register')
 
     return render(request, 'user/register.html')
 
+
 # Login
 def userlogin(request):
+    if request.user.is_authenticated:
+        return redirect('userhome')  # Redirect if already logged in
+    
     if request.method == 'POST':
         email = request.POST['email'].strip()
         password = request.POST['password']
@@ -43,15 +54,13 @@ def userlogin(request):
 
     return render(request, 'user/login.html')
 
+
 # Logout
 def userlogout(request):
     logout(request)
     return redirect('login')
 
+
 # Home
 def userhome(request):
-    if request.user.is_authenticated:
-        return render(request, 'home.html', {'username': request.user.username})
-    else:
-        messages.error(request, "You must be logged in to access the home page!")
-        return redirect('login')
+    return render(request,'home.html', {'username': request.user.username})
