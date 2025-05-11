@@ -1,0 +1,276 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | CarHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #968679, #ffffff);
+            color: #fff;
+            padding-top: 100px;
+            margin: 0;
+        }
+
+        
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+
+        footer {
+            background: #000 !important;
+            color: #fff;
+            width: 100vw;
+            margin-top: 50px;
+            padding: 0;
+        }
+
+        footer a {
+            color: #bbbbbb;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        footer h5,
+        footer h6 {
+            color: #ffffff;
+        }
+
+        .contact-card {
+            background: #fff;
+            color: #000;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-control:focus {
+            border-color: #000;
+            box-shadow: none;
+        }
+
+        .btn-dark {
+            background-color: #000;
+            border: none;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-dark:hover {
+            transform: scale(1.05);
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow" style="background-color: #000000;">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{% static 'images/logo.gif' %}" alt="CarHub Logo" height="80" class="me-2">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse navlist" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+                        <ul class="dropdown-menu">
+                            {% for i in cat %}
+                            <li><a class="dropdown-item" href="../view_category/{{ i.pk }}">{{ i.category }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="/profile">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    <div class="container mt-3" data-aos="fade-down">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Contact Section -->
+    <div class="container mt-5" data-aos="fade-up">
+        <h2 class="text-center mb-4 fw-bold text-dark">Contact Us</h2>
+        <div class="row g-4">
+            <!-- Contact Form -->
+            <div class="col-md-6">
+                <div class="contact-card">
+                    <h4 class="mb-4">Send a Message</h4>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100">Send Message</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Contact Info -->
+            <div class="col-md-6">
+                <div class="contact-card">
+                    <h4 class="mb-3">Our Office</h4>
+                    <p><i class="bi bi-geo-alt-fill text-primary"></i> Thrissur, India</p>
+                    <p><i class="bi bi-telephone-fill text-primary"></i> +91 9846675300
+                    <div class="mt-3">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d125531.65889000554!2d76.06734900255582!3d10.511349555132526!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba7ee15ed42d1bb%3A0x82e45aa016ca7db!2sThrissur%2C%20Kerala!5e0!3m2!1sen!2sin!4v1746101344511!5m2!1sen!2sin"
+                            width="100%" height="290" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Floating Icon -->
+    <a href="https://wa.me/919846675300" target="_blank" class="whatsapp-float">
+        <i class="bi bi-whatsapp fs-3"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="pt-5 pb-4 text-white">
+        <div class="container-fluid px-5">
+            <div class="row gy-5 justify-content-center text-center text-md-start">
+                <div class="col-12 col-md-3">
+                    <a href="/" class="d-inline-block mb-3">
+                        <img src="{% static 'images/logo.png' %}" alt="CarHub Logo" height="60">
+                    </a>
+                    <p class="small">Where comfort meets class, without empty your pocket.
+                    <div class="d-flex justify-content-center justify-content-md-start gap-3 mt-3">
+                        <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="fw-semibold text-white">Account</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-white">Dashboard</a></li>
+                        <li><a href="#" class="text-white">Settings</a></li>
+                        <li><a href="#" class="text-white">Billing</a></li>
+                        <li><a href="#" class="text-white">Notifications</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="fw-semibold text-white">About</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-white">Services</a></li>
+                        <li><a href="#" class="text-white">Pricing</a></li>
+                        <li><a href="#" class="text-white">Contact</a></li>
+                        <li><a href="#" class="text-white">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-3">
+                    <h6 class="fw-semibold text-white">Company</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-white">Community</a></li>
+                        <li><a href="#" class="text-white">Help Center</a></li>
+                        <li><a href="#" class="text-white">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="text-white mt-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-white text-center">
+                <p class="mb-2 mb-md-0">&copy; 2024 All Rights Reserved by CarHub</p>
+                <div>
+                    <a href="#" class="text-white me-3">Terms</a>
+                    <a href="#" class="text-white me-3">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+
+</html>

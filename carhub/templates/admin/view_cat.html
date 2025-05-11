@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars in Category</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../admin_home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h3 class="text-center text-uppercase mb-4" style="color: #000000;">
+            Cars in {{ category.category }}
+        </h3>
+        <div class="row mt-4">
+            {% for i in car %}
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
+                <a href="/edit_car/{{ i.id }}" style="text-decoration: none; color: inherit;">
+                    <div class="card shadow-sm border-0 product-card mx-auto" style="max-width: 90%; padding: 10px;">
+                        <img src="{{ i.image.url }}" class="card-img-top img-fluid"
+                             alt="{{ i.name }}"
+                             style="max-height: 180px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h6 class="card-title text-dark fw-bold" style="font-size: 16px;">{{ i.name }}</h6>
+                            <p class="card-text fw-bold" style="font-size: 14px;">{{ i.brand }}</p>
+                            <p class="card-text" style="font-size: 12px;">{{ i.category.category }}</p>
+                            <p class="card-text" style="font-size: 14px;">₹ {{ i.price_per_day }}/Day</p>
+                            <span class="btn btn-outline-primary btn-sm mt-2">Edit</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

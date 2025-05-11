@@ -1,1 +1,0 @@
-let log_btn = document.getElementById

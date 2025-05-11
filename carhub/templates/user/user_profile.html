@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - {{ user.first_name }}</title>
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+    <style>
+        body {
+            background: linear-gradient(to bottom, #968679, #ffffff);
+            padding-top: 90px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .navbar {
+            background-color: #000 !important;
+        }
+
+        .navbar .nav-link {
+            color: #fff !important;
+        }
+
+        .navbar .nav-link:hover {
+            color: #ccc !important;
+        }
+
+        .section-heading {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            margin-top: 60px;
+        }
+
+        footer a {
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{% static 'images/logo.gif' %}" alt="Logo" height="60" class="me-2" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse navlist" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                            data-bs-toggle="dropdown">Categories</a>
+                        <ul class="dropdown-menu">
+                            {% for i in cat %}
+                            <li><a class="dropdown-item" href="../view_category/{{ i.pk }}">{{ i.category }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="/profile">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% for section in booking_sections %}
+        <div id="section{{ forloop.counter }}" class="mb-5">
+            <h4 class="section-heading mb-3">{{ section.label }}</h4>
+
+            {% with section.group|length as total_rentals %}
+            {% if total_rentals > 0 %}
+            {% for rental in section.group %}
+            <div class="card mb-3 rental-item {% if forloop.counter > 2 %}d-none extra-rental{% endif %}">
+                <div class="row g-0">
+                    <div class="col-md-2 text-center p-3">
+                        <img src="{{ rental.car.image.url }}" class="img-fluid rounded" alt="{{ rental.car.name }}"
+                            style="max-height: 80px;">
+                    </div>
+                    <div class="col-md-7 p-3">
+                        <h5>{{ rental.car.name }}</h5>
+                        <p><strong>From:</strong> {{ rental.start_date }} <strong>To:</strong> {{ rental.end_date }}</p>
+                    </div>
+                    <div class="col-md-3 p-3 text-end">
+                        <h6 class="text-success">₹{{ rental.total_price }}</h6>
+
+                        {% if rental.status == "Pending" %}
+                        <span class="badge bg-warning text-dark">Request Pending</span>
+                        <a href="{% url 'cancel_rental' rental.id %}" class="btn btn-sm btn-danger mt-1"
+                            onclick="return confirm('Are you sure you want to cancel this rental?');">Cancel Rental</a>
+
+                        {% elif rental.status == "Approved" %}
+                        {% if rental.is_advance_paid and not rental.is_full_paid %}
+                        <span class="badge bg-info text-dark">Advance Paid</span><br>
+                        <p class="mb-1">Remaining Balance: ₹{{ rental.remaining_amount }}</p>
+                        <a href="{% url 'pay_balance' rental.id %}" class="btn btn-sm btn-primary mt-1">Pay Balance</a>
+                        {% elif rental.is_full_paid %}
+                        <span class="badge bg-success">Payment Complete</span><br>
+                        <p class="text-muted small">Thank you! Your full payment has been received.</p>
+                        {% else %}
+                        <span class="badge bg-success">Request Approved</span><br>
+                        <a href="{% url 'payment' rental.id %}" class="btn btn-sm btn-success mt-1">Pay Advance</a>
+                        {% endif %}
+                        <a href="{% url 'cancel_rental' rental.id %}" class="btn btn-sm btn-danger mt-1"
+                            onclick="return confirm('Are you sure you want to cancel this rental?');">Cancel Rental</a>
+
+                        {% elif rental.status == "Rejected" %}
+                        <span class="badge bg-danger">Rejected</span>
+
+                        {% elif rental.status == "Completed" %}
+                        <span class="badge bg-primary">Trip Completed</span>
+
+                        {% elif rental.status == "Cancelled" %}
+                        <span class="badge bg-secondary">Cancelled</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if total_rentals > 2 %}
+            <div class="text-center mt-2">
+                <button class="btn btn-outline-dark btn-sm toggle-btn" data-target="section{{ forloop.counter }}">See
+                    More</button>
+            </div>
+            {% endif %}
+            {% else %}
+            <p class="text-muted">No {{ section.label|lower }}.</p>
+            {% endif %}
+            {% endwith %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- WhatsApp Icon -->
+    <a href="https://wa.me/919846675300" class="whatsapp-float" target="_blank">
+        <i class="bi bi-whatsapp fs-3"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="pt-5 pb-4">
+        <div class="container">
+            <div class="row text-center text-md-start">
+                <div class="col-md-3">
+                    <img src="{% static 'images/logo.png' %}" alt="CarHub" height="50" />
+                    <p class="small mt-2">Where comfort meets class, without emptying your pocket.</p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Account</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Billing</a></li>
+                        <li><a href="#">Notifications</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6>About</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6>Follow Us</h6>
+                    <div class="d-flex gap-3">
+                        <a href="#"><i class="bi bi-facebook text-white"></i></a>
+                        <a href="#"><i class="bi bi-twitter text-white"></i></a>
+                        <a href="#"><i class="bi bi-instagram text-white"></i></a>
+                        <a href="#"><i class="bi bi-linkedin text-white"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4" />
+            <div class="text-center small">
+                &copy; 2024 CarHub. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll(".toggle-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const section = document.getElementById(button.dataset.target);
+                const items = section.querySelectorAll(".extra-rental");
+                items.forEach(item => item.classList.toggle("d-none"));
+                button.textContent = button.textContent.trim() === "See More" ? "See Less" : "See More";
+            });
+        });
+    </script>
+</body>
+
+</html>

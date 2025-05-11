@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Complete Your Payment | CarHub</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #968679, #ffffff);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            color: #fff;
+        }
+
+        .razorpay-payment-button {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+            font-weight: 600;
+            padding: 12px 32px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .razorpay-payment-button:hover {
+            background-color: #e0ae06 !important;
+            transform: scale(1.02);
+        }
+
+        .card {
+            background-color: #393223;
+            color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+
+        .car-img {
+            max-height: 240px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+        }
+
+        .amount-box {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffc107;
+        }
+
+        .badge-status {
+            font-size: 0.95rem;
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #ffc107;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: #000;
+            color: #ffc107;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            background-color: #ffc107;
+            color: #000;
+            text-decoration: none;
+        }
+
+        .back-link i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        .footer-note {
+            font-size: 0.85rem;
+            color: #cccccc;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container my-5">
+        <a href="/profile" class="back-link">
+            <i class="bi bi-arrow-left-circle"></i> Back to Dashboard
+        </a>
+
+        <h2 class="text-center section-title mb-4">Complete Your Payment</h2>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="card p-4 p-md-5">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-5">
+                            <img src="{{ car.image.url }}" alt="{{ car.brand }} {{ car.name }}"
+                                class="img-fluid car-img">
+                        </div>
+                        <div class="col-md-7">
+                            <h4 class="mb-2">{{ car.brand }} {{ car.name }}</h4>
+                            <p><i class="bi bi-calendar-check"></i> <strong>Rental Period:</strong> {{ rental.start_date }} to {{ rental.end_date }}</p>
+                            <p><i class="bi bi-clock-history"></i> <strong>Total Days:</strong> {{ rental.num_days }} day(s)</p>
+                            <p><i class="bi bi-cash-coin"></i> <strong>Total Price:</strong> ₹{{ total_price }}</p>
+                            <p class="amount-box"><i class="bi bi-wallet2"></i> Advance to Pay Now: ₹{{ advance_amount }}</p>
+                            <span class="badge badge-status"><i class="bi bi-info-circle"></i> Status: {{ rental.status }}</span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <form id="payment-success-form" action="{% url 'payment_success' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="rental_id" value="{{ rental.id }}">
+                            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+                            <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+                            <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+                            <input type="hidden" name="amount" value="{{ amount_paise }}">
+                        </form>
+
+                        <div class="text-center">
+                            <button id="pay-now-btn" class="razorpay-payment-button">Pay ₹{{ advance_amount }}</button>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="footer-note text-center">
+                        <p><strong>Note:</strong> The advance is 20% of your total rental cost. Remaining balance is due at vehicle pickup.</p>
+                        <p>By proceeding, you agree to our <a href="#" style="color: #ffc107; text-decoration: underline;">rental terms and policies</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Icon -->
+    <a href="https://wa.me/919846675300" target="_blank" class="whatsapp-float" title="Need Help? Chat with us on WhatsApp">
+        <i class="bi bi-whatsapp" style="font-size: 28px;"></i>
+    </a>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById("pay-now-btn").onclick = function (e) {
+            e.preventDefault();
+            this.disabled = true;
+
+            const options = {
+                key: "{{ razorpay_key }}",
+                amount: "{{ amount_paise }}", // already in paise
+                currency: "INR",
+                name: "CarHub Rentals",
+                description: "Advance payment for {{ car.name }}",
+                image: "{% static 'images/logo.png' %}",
+                order_id: "{{ order_id }}",
+                handler: function (response) {
+                    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                    document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+
+                    // Add amount to form
+                    const amountInput = document.createElement("input");
+                    amountInput.type = "hidden";
+                    amountInput.name = "amount";
+                    amountInput.value = options.amount; // in paise
+                    document.getElementById('payment-success-form').appendChild(amountInput);
+
+                    document.getElementById('payment-success-form').submit();
+                },
+                prefill: {
+                    name: "{{ user_name }}",
+                    email: "{{ user_email }}",
+                    contact: "{{ user_mobile|default:'' }}"
+                },
+                theme: {
+                    color: "#ffc107"
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                alert("Payment failed: " + response.error.description);
+                document.getElementById("pay-now-btn").disabled = false;
+            });
+
+            rzp.open();
+        };
+    </script>
+
+</body>
+</html>

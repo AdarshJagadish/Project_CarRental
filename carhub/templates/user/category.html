@@ -1,0 +1,250 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #968679, #ffffff);
+            color: #fff;
+            padding-top: 100px;
+            margin: 0;
+        }
+
+        .cars-card {
+            height: 100%;
+            background-color: #393223;
+            color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        #rent {
+            background-color: #eee5c9;
+            color: black;
+        }
+
+        .product-img {
+            max-height: 250px;
+            max-width: 100%;
+            padding: 10px;
+        }
+
+        .cars:hover {
+            transform: scale(1.01);
+        }
+
+        #seeMoreBtn,
+        #seeLessBtn {
+            color: #fff;
+            background-color: #000;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+
+        footer {
+            background: #000 !important;
+            color: #fff;
+            width: 100vw;
+            margin-top: 50px;
+            padding: 0;
+        }
+
+        footer a {
+            color: #bbbbbb;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        footer h5,
+        footer h6 {
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .product-card {
+                max-width: 100%;
+                height: auto;
+                padding: 5px;
+            }
+
+            .product-img {
+                max-height: 150px;
+                /* Smaller images for mobile */
+            }
+
+            .card-body {
+                padding: 10px;
+            }
+
+            .card-body h6,
+            .card-body p {
+                font-size: 14px !important;
+                /* Adjust text size */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow" style="background-color: #000000;">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="{% static 'images/logo.gif' %}" alt="CarHub Logo" height="80" class="me-2">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse navlist" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
+                        <ul class="dropdown-menu">
+                            {% for i in cat %}
+                            <li><a class="dropdown-item" href="../view_category/{{ i.pk }}">{{ i.category }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="/profile">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h3 class="text-center mb-4 fw-bold text-uppercase text-dark">
+            Cars in {{ category.category }}
+        </h3>
+        <div class="row mt-5">
+            {% for i in car %}
+            <div class="col-lg-3 col-md-4 col-6 mb-4 cars {% if forloop.counter > 8 %}d-none more-cars{% endif %}">
+                <div class="card shadow-sm border-0 product-card cars-card h-100 hover-shadow">
+                    <a href="/view_car/{{ i.pk }}" class="text-decoration-none">
+                        <div class="ratio ratio-4x3">
+                            <img src="{{ i.image.url }}" class="card-img-top img-fluid" alt="{{ i.name }}"
+                                style="object-fit: cover;">
+                        </div>
+                        <div class="card-body text-center text-white d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title fw-bold mb-2">{{ i.name }}</h5>
+                                <p class="card-text mb-1">Brand: <span class="fw-semibold">{{ i.brand }}</span></p>
+                                <p class="card-text mb-1">Category: <span class="fw-semibold">{{ i.category.category}}</span></p>
+                                <span class="badge mt-2" id="rent">₹{{ i.price_per_day }}/day</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="text-center pb-3">
+                        <a href="/view_car/{{ i.pk }}" class="btn btn-warning mt-2">Hire Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <!-- WhatsApp Floating Icon -->
+    <a href="https://wa.me/919846675300" target="_blank" class="whatsapp-float">
+        <i class="bi bi-whatsapp fs-3"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="pt-5 pb-4 text-white">
+        <div class="container-fluid px-5">
+            <div class="row gy-5 justify-content-center text-center text-md-start">
+                <div class="col-12 col-md-3">
+                    <a href="/" class="d-inline-block mb-3">
+                        <img src="{% static 'images/logo.png' %}" alt="CarHub Logo" height="60">
+                    </a>
+                    <p class="small">Where comfort meets class, without empty your pocket.
+                    <div class="d-flex justify-content-center justify-content-md-start gap-3 mt-3">
+                        <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="fw-semibold text-white">Account</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-white">Dashboard</a></li>
+                        <li><a href="#" class="text-white">Settings</a></li>
+                        <li><a href="#" class="text-white">Billing</a></li>
+                        <li><a href="#" class="text-white">Notifications</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="fw-semibold text-white">About</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-white">Services</a></li>
+                        <li><a href="#" class="text-white">Pricing</a></li>
+                        <li><a href="#" class="text-white">Contact</a></li>
+                        <li><a href="#" class="text-white">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-3">
+                    <h6 class="fw-semibold text-white">Company</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="#" class="text-white">Community</a></li>
+                        <li><a href="#" class="text-white">Help Center</a></li>
+                        <li><a href="#" class="text-white">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="text-white mt-4">
+            <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-white text-center">
+                <p class="mb-2 mb-md-0">&copy; 2024 All Rights Reserved by CarHub</p>
+                <div>
+                    <a href="#" class="text-white me-3">Terms</a>
+                    <a href="#" class="text-white me-3">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+</html>
