@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-hjn2#f&(oxts3dhg#z0z^x1$_f%cz!10q8b837i$&)9a0m)vtl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['carhub.pythonanywhere.com', 'www.carhub.pythonanywhere.com']
 
 
 # Application definition
